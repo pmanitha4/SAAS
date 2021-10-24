@@ -1,0 +1,71 @@
+#!/usr/bin/env groovy
+
+pipeline {
+    agent any
+
+    tools { 
+        maven 'maven-3.6.3' 
+    }
+    
+    environment { 
+        MAVEN_SETTINGS = 'C:/UTP/maven/settings-jenkins.xml'
+        DEPLOY_SERVER_URL = 'http://localhost:9089/dsf-iris'
+        CURL_PATH= 'C:/apps/tools/curl-7.72.0-win64-mingw/bin'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                script{
+                    def dsfReleaseNumber =  "${env.dsfReleaseVersion}.${env.BUILD_ID}"
+               		echo "Running build ${env.BUILD_ID} for dsf release ${dsfReleaseNumber}"                    
+                    
+                    echo "Create GIT branch for dsf release ${dsfReleaseNumber}"
+					bat(returnStdout: true, script: "git checkout -b ${dsfReleaseNumber}").trim()
+					
+					echo "Upgrade pom.xmls for dsf release ${dsfReleaseNumber}"
+					def upgradePom = bat(returnStdout: true, script: "mvn -B -f bank-build-full/pom.xml -s ${MAVEN_SETTINGS} versions:set -DnewVersion=${dsfReleaseNumber} -DprocessAllModules -DgenerateBackupPoms=false").trim()
+					echo "${upgradePom}"
+				}
+               
+               timestamps {
+                    bat '''
+                       mvn -B -f bank-build-full/pom.xml -s %MAVEN_SETTINGS% clean install
+                    '''               
+               }
+               
+               step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+               
+            }
+        }
+        
+        stage('Deploy data packages') {
+            steps {
+                echo 'Deploying....'    
+
+                script{
+					def dsfReleaseNumber =  "${env.dsfReleaseVersion}.${env.BUILD_ID}"                
+                
+                    def url = "${DEPLOY_SERVER_URL}/api/v1.0.0/meta/dsfpackages/multiPackageDeploy"
+                    def curlRequest = "${CURL_PATH}/curl -X POST -L -F 'package=@bank-build-data/target/bank-build-data-${dsfReleaseNumber}.zip;type=application/zip' ${url}"
+                    
+                    def response = bat(returnStdout: true, script: "${curlRequest}").trim()
+                    echo "Reponse is: ${response}"                    
+                    
+                    def pattern = "\\Q[]\\E"
+                    
+                    def finder = (response =~ ~/${pattern}/);
+                    if (!finder) {
+                      error("Deployment failed")
+                    }
+                    
+					echo "Push branch"
+					def pushBranch = bat(returnStdout: true, script: "git push origin ${dsfReleaseNumber}").trim()
+					echo "${pushBranch}"                    
+                    
+                }
+            }
+        }
+
+    }
+}

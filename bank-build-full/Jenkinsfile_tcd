@@ -1,0 +1,92 @@
+#!/usr/bin/env groovy
+
+pipeline {
+    agent any
+
+    tools { 
+        maven 'maven-3.6.3' 
+    }
+    
+    environment { 
+        MAVEN_SETTINGS = 'C:/UTP/maven/settings-jenkins.xml'
+        ARTIFACTORY_KEY = 'AKCp8ihpbUMchuxJbXxFLAwygq5AEhZdQrCmhJfWiQqCuimmGpGKJmWoThp5aJ6jUJbaxLe9L'
+        ARTIFACTORY_DESTINATION_URL = 'https://1egds1o43noqo-Artifactory.temenos.cloud:443/artifactory/repo-1egds1o43noqo/ScaleDemoStream/Base_stage'
+        CURL_PATH= 'C:/apps/tools/curl-7.72.0-win64-mingw/bin'
+    }
+
+    stages {
+        stage('Build All Packages') {
+            steps {
+
+                script{
+                    def dsfReleaseNumber =  "${env.dsfReleaseVersion}.${env.BUILD_ID}"
+               		echo "Running build ${env.BUILD_ID} for dsf release ${dsfReleaseNumber}"                    
+                    
+                    echo "Create GIT branch for dsf release ${dsfReleaseNumber}"
+					bat(returnStdout: true, script: "git checkout -b ${dsfReleaseNumber}").trim()
+					
+					echo "Upgrade pom.xmls for dsf release ${dsfReleaseNumber}"
+					def upgradePom = bat(returnStdout: true, script: "mvn -B -f bank-build-full/pom.xml -s ${MAVEN_SETTINGS} versions:set -DnewVersion=${dsfReleaseNumber} -DprocessAllModules -DgenerateBackupPoms=false").trim()
+					echo "${upgradePom}"
+				}
+               
+               timestamps {
+                    bat '''
+                       mvn -B -f bank-build-full/pom.xml -s %MAVEN_SETTINGS% clean install
+                    '''               
+               }
+               
+               step([$class: 'ArtifactArchiver', artifacts: '**/target/*.jar', fingerprint: true])
+               
+                echo "Running build ${env.BUILD_ID} for dsf release ${env.dsfReleaseVersion}"
+            }
+        }
+        
+        stage('Push to TCD/Assemble common-data') {
+            steps {
+               // See how to publish to TCD
+               // http://documentation.temenos.cloud/home/techguides/components-products.html#how-to-upload-binaries-into-the-artifactory
+                echo 'Deploying....'    
+
+                script{
+					def dsfReleaseNumber =  "${env.dsfReleaseVersion}.${env.BUILD_ID}"
+                
+                    def curlRequest = "${CURL_PATH}/curl -H \"X-JFrog-Art-Api:${ARTIFACTORY_KEY}\" \"${ARTIFACTORY_DESTINATION_URL}/L3_Common/common-data-${dsfReleaseNumber}.zip\" -T common-data/target/common-data-${dsfReleaseNumber}.jar"
+                    
+                    def response = bat(returnStdout: true, script: "${curlRequest}").trim()
+					echo "Reponse is: ${response}"
+                }
+            }
+        }
+        
+         stage('Push to TCD/Assemble payments-data') {
+            steps {
+               // See how to publish to TCD
+               // http://documentation.temenos.cloud/home/techguides/components-products.html#how-to-upload-binaries-into-the-artifactory
+                echo 'Deploying....'    
+
+                script{
+					def dsfReleaseNumber =  "${env.dsfReleaseVersion}.${env.BUILD_ID}"
+                
+                    def curlRequest = "${CURL_PATH}/curl -H \"X-JFrog-Art-Api:${ARTIFACTORY_KEY}\" \"${ARTIFACTORY_DESTINATION_URL}/L3_Payments/payments-data-${dsfReleaseNumber}.zip\" -T payments-data/target/payments-data-${dsfReleaseNumber}.jar"
+                    
+                    def response = bat(returnStdout: true, script: "${curlRequest}").trim()
+					echo "Reponse is: ${response}"
+                }
+            }
+        }      
+                
+        stage('Push branch for released packages') {
+            steps {
+            	script{        
+				    echo "Push branch"
+					def dsfReleaseNumber =  "${env.dsfReleaseVersion}.${env.BUILD_ID}"
+									    
+					def pushBranch = bat(returnStdout: true, script: "git push origin ${dsfReleaseNumber}").trim()
+					echo "${pushBranch}"                    
+				}
+            }
+        }
+        
+    }
+}
