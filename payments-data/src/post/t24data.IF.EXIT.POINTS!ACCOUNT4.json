@@ -1,0 +1,35 @@
+{
+  "header" : {
+    "dsfApiComponent" : "t24data",
+    "dsfApiType" : "IF.EXIT.POINTS",
+    "id" : "ACCOUNT4",
+    "dsfApiPhase" : "post",
+    "metadata" : {
+      "installed" : "NO",
+      "release" : "T24202103"
+    }
+  },
+  "body" : {
+    "EXIT.POINT" : [ {
+      "EXIT.POINT" : "INPUT.ROUTINE-Customer",
+      "COMPANIES.LIST" : [ {
+        "COMPANIES.LIST" : "GB0010001 US0010001"
+      }, {
+        "COMPANIES.LIST" : "GB0010001"
+      } ],
+      "INTEG.FLOW" : [ {
+        "INTEG.FLOW" : "Customer-CUSTFLOW"
+      }, {
+        "INTEG.FLOW" : "Customer-SecondOne"
+      } ]
+    }, {
+      "EXIT.POINT" : "AUTH.ROUTINE-Customer",
+      "COMPANIES.LIST" : [ {
+        "COMPANIES.LIST" : "GB0010001 US0010001"
+      } ],
+      "INTEG.FLOW" : [ {
+        "INTEG.FLOW" : "Customer-CUSTFLOW"
+      } ]
+    } ]
+  }
+}
