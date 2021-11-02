@@ -1,0 +1,128 @@
+{
+  "header" : {
+    "dsfApiComponent" : "t24data",
+    "dsfApiType" : "ENQUIRY",
+    "id" : "CUSTOMER.INFO",
+    "dsfApiPhase" : "main",
+    "metadata" : {
+      "installed" : "NO",
+      "release" : "T24202011"
+    }
+  },
+  "body" : {
+    "ENQUIRY.NAME" : [ {
+      "ENQUIRY.NAME" : "CUSTOMER S Cus.No",
+      "LABEL.FIELD" : "Cus.No 2",
+      "NXT.DESC" : [ {
+        "NXT.DESC" : "Record View"
+      } ]
+    } ],
+    "OPEN.BRACKET" : [ {
+      "SELECTION.FLDS" : "SECTOR"
+    }, {
+      "SELECTION.FLDS" : "ACCOUNT.OFFICER"
+    }, {
+      "SELECTION.FLDS" : "INDUSTRY"
+    }, {
+      "SELECTION.FLDS" : "NATIONALITY"
+    }, {
+      "SELECTION.FLDS" : "RESIDENCE"
+    } ],
+    "PAGE.SIZE" : "4,19",
+    "PRODUCT" : "ST",
+    "FIELD.NAME" : [ {
+      "FIELD.NAME" : "HDR.1",
+      "OPERATION" : [ {
+        "OPERATION" : "\"Customer Information\""
+      } ],
+      "COLUMN" : "25,0",
+      "FIELD.DISP.TYPE" : "CLASS-ENQ.H.TITLE",
+      "SECTION" : "HEADER"
+    }, {
+      "FIELD.NAME" : "Cus.No",
+      "OPERATION" : [ {
+        "OPERATION" : "@ID"
+      } ],
+      "LENGTH.MASK" : "10L",
+      "SINGLE.MULTI" : "S",
+      "COLUMN" : "3",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Customer.No"
+      } ]
+    }, {
+      "FIELD.NAME" : "Mnem",
+      "OPERATION" : [ {
+        "OPERATION" : "MNEMONIC"
+      } ],
+      "LENGTH.MASK" : "10L",
+      "COLUMN" : "14",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Mnemonic"
+      } ]
+    }, {
+      "FIELD.NAME" : "Short.Name",
+      "OPERATION" : [ {
+        "OPERATION" : "SHORT.NAME"
+      } ],
+      "LENGTH.MASK" : "30L",
+      "COLUMN" : "25",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Short Name"
+      } ]
+    }, {
+      "FIELD.NAME" : "Natlty",
+      "OPERATION" : [ {
+        "OPERATION" : "NATIONALITY"
+      } ],
+      "LENGTH.MASK" : "2L",
+      "COLUMN" : "56",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Nationality"
+      } ]
+    }, {
+      "FIELD.NAME" : "Res",
+      "OPERATION" : [ {
+        "OPERATION" : "RESIDENCE"
+      } ],
+      "LENGTH.MASK" : "2L",
+      "COLUMN" : "60",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Residence"
+      } ]
+    }, {
+      "FIELD.NAME" : "Ac.Ofcr",
+      "OPERATION" : [ {
+        "OPERATION" : "ACCOUNT.OFFICER"
+      } ],
+      "LENGTH.MASK" : "4R",
+      "COLUMN" : "63",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Account Officer"
+      } ]
+    }, {
+      "FIELD.NAME" : "Ind",
+      "OPERATION" : [ {
+        "OPERATION" : "INDUSTRY"
+      } ],
+      "LENGTH.MASK" : "4R",
+      "COLUMN" : "68",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Industry"
+      } ]
+    }, {
+      "FIELD.NAME" : "Sect",
+      "OPERATION" : [ {
+        "OPERATION" : "SECTOR"
+      } ],
+      "LENGTH.MASK" : "4R",
+      "COLUMN" : "73",
+      "FIELD.LBL" : [ {
+        "FIELD.LBL" : "Sector"
+      } ]
+    } ],
+    "SHORT.DESC" : [ {
+      "SHORT.DESC" : "CUSTOMER.INFO"
+    } ],
+    "FILE.NAME" : "CUSTOMER"
+  }
+}
