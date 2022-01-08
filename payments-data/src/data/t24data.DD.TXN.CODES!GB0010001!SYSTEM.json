@@ -6,7 +6,7 @@
     "dsfApiPhase" : "main",
     "metadata" : {
       "installed" : "NO",
-      "release" : "0007"
+      "release" : "007"
     },
     "ttag" : {
       "t24" : {
@@ -17,7 +17,7 @@
   "body" : {
     "RESUBMIT.ITEM.DR" : "914",
     "REJECT.ITEM.DR" : "918",
-    "RESUBMIT.ITEM.CR" : "915",
+    "RESUBMIT.ITEM.CR" : "916",
     "REJECT.ITEM.CR" : "919",
     "RETURN.ITEM.DR" : "912",
     "NEW.ITEM.CR" : "911",
