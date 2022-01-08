@@ -2,6 +2,6 @@
     "dsfApiAction": "History restore",
     "dsfApiType": "CURRENCY",
     "id": "USD",
-    "dsfApiPhase": "main",
+    "dsfApiPhase": "pre",
     "dsfApiComponent": "t24data"
 }}
