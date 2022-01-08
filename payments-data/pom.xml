@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.temenos.dsf</groupId>
 	<artifactId>payments-data</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 
 	<properties>
 		<dsf.installer.version>DEV.0.0-SNAPSHOT</dsf.installer.version>
